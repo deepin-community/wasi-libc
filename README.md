@@ -7,7 +7,8 @@ environment variables, program startup, and many other APIs.
 
 WASI Libc is sufficiently stable and usable for many purposes, as most of the
 POSIX-compatible APIs are stable, though it is continuing to evolve to better
-align with wasm and WASI.
+align with wasm and WASI. For example, pthread support is still a work in
+progress.
 
 ## Usage
 
@@ -17,7 +18,7 @@ build of WASI Libc in its sysroot.
 ## Building from source
 
 To build a WASI sysroot from source, obtain a WebAssembly-supporting C compiler
-(currently this is only clang 8+, though we'd like to support other compilers as well),
+(currently this is only clang 10+, though we'd like to support other compilers as well),
 and then run:
 
 ```sh

@@ -1,8 +1,12 @@
+Author: Ximin Luo <infinity0@debian.org>
+Description: Prevent spurious rebuilds
+Forwarded: not-needed
+
 Index: wasi-libc/Makefile
 ===================================================================
 --- wasi-libc.orig/Makefile
 +++ wasi-libc/Makefile
-@@ -449,6 +449,8 @@ include_dirs:
+@@ -577,6 +577,8 @@ include_dirs:
  	# Remove selected header files.
  	$(RM) $(patsubst %,$(SYSROOT_INC)/%,$(MUSL_OMIT_HEADERS))
  
@@ -11,7 +15,7 @@ Index: wasi-libc/Makefile
  startup_files: include_dirs
  	#
  	# Build the startup files.
-@@ -459,6 +461,8 @@ startup_files: include_dirs
+@@ -587,6 +589,8 @@ startup_files: include_dirs
  	mkdir -p "$(SYSROOT_LIB)" && \
  	mv *.o "$(SYSROOT_LIB)"
  
@@ -20,7 +24,7 @@ Index: wasi-libc/Makefile
  libc: include_dirs \
      $(SYSROOT_LIB)/libc.a \
      $(SYSROOT_LIB)/libc-printscan-long-double.a \
-@@ -468,6 +472,8 @@ libc: include_dirs \
+@@ -596,6 +600,8 @@ libc: include_dirs \
      $(SYSROOT_LIB)/libwasi-emulated-getpid.a \
      $(SYSROOT_LIB)/libwasi-emulated-signal.a
  
@@ -29,7 +33,7 @@ Index: wasi-libc/Makefile
  finish: startup_files libc
  	#
  	# Create empty placeholder libraries.
-@@ -479,6 +485,7 @@ finish: startup_files libc
+@@ -607,6 +613,7 @@ finish: startup_files libc
  	#
  	# The build succeeded! The generated sysroot is in $(SYSROOT).
  	#
@@ -37,7 +41,7 @@ Index: wasi-libc/Makefile
  
  # The check for defined and undefined symbols expects there to be a heap
  # alloctor (providing malloc, calloc, free, etc). Skip this step if the build
-@@ -580,5 +587,6 @@ install: finish
+@@ -712,5 +719,6 @@ install: finish
  clean:
  	$(RM) -r "$(OBJDIR)"
  	$(RM) -r "$(SYSROOT)"
