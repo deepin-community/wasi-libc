@@ -1,3 +1,44 @@
+wasi-libc (0.0~git20230113.4362b18-2) unstable; urgency=medium
+
+  * Revert "build: enable stack protection" (Closes: #1051815)
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Wed, 13 Sep 2023 08:19:24 +0200
+
+wasi-libc (0.0~git20230113.4362b18-1) unstable; urgency=medium
+
+  * Upload to unstable
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Sun, 10 Sep 2023 19:22:19 +0200
+
+wasi-libc (0.0~git20230113.4362b18-1~exp1) experimental; urgency=medium
+
+  * new upstream version needed for rustc 1.68.2+
+  * build: enable stack protection
+  * d/control: update Standards-Version
+  * update d/copyright
+  * cleanup lintian overrides
+  * add DEP-3 metadata to patches
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Fri, 08 Sep 2023 09:56:09 +0200
+
+wasi-libc (0.0~git20221206.8b7148f-1) unstable; urgency=medium
+
+  * Disable (not supported) cf-protection CFLAG
+  * Add myself to Uploaders
+  * Upload to unstable
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Sun, 03 Sep 2023 19:59:33 +0200
+
+wasi-libc (0.0~git20221206.8b7148f-1~exp1) experimental; urgency=medium
+
+  * Team upload.
+
+  [ Blair Noctis ]
+  * New upstream version
+  * Refresh patches
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Wed, 26 Jul 2023 21:28:48 +0200
+
 wasi-libc (0.0~git20220510.9886d3d-2) unstable; urgency=medium
 
   * d/copyright: add missing license info
