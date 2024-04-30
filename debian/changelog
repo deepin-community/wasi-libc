@@ -1,3 +1,9 @@
+wasi-libc (0.0~git20230113.4362b18-3) unstable; urgency=medium
+
+  * switch to LLVM 16 (Closes: #1061217)
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Thu, 25 Jan 2024 21:48:31 +0100
+
 wasi-libc (0.0~git20230113.4362b18-2) unstable; urgency=medium
 
   * Revert "build: enable stack protection" (Closes: #1051815)
