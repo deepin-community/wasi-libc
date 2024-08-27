@@ -33,10 +33,17 @@
 #define ADJ_TAI 0x0080
 #define ADJ_TICK 0x4000
 #define ADJ_TIMECONST 0x0020
-#define AF_INET 1
-#define AF_INET6 2
+#define AF_INET PF_INET
+#define AF_INET6 PF_INET6
 #define AF_UNIX 3
-#define AF_UNSPEC 0
+#define AF_UNSPEC PF_UNSPEC
+#define AI_ADDRCONFIG 0x20
+#define AI_ALL 0x10
+#define AI_CANONNAME 0x02
+#define AI_NUMERICHOST 0x04
+#define AI_NUMERICSERV 0x400
+#define AI_PASSIVE 0x01
+#define AI_V4MAPPED 0x08
 #define ALT_DIGITS 0x2002F
 #define AM_STR 0x20026
 #define ANYMARK 0x01
@@ -181,6 +188,7 @@
 #define DT_FIFO __WASI_FILETYPE_SOCKET_STREAM
 #define DT_LNK __WASI_FILETYPE_SYMBOLIC_LINK
 #define DT_REG __WASI_FILETYPE_REGULAR_FILE
+#define DT_SOCK 20
 #define DT_UNKNOWN __WASI_FILETYPE_UNKNOWN
 #define D_FMT 0x20029
 #define D_T_FMT 0x20028
@@ -191,6 +199,24 @@
 #define EADDRNOTAVAIL __WASI_ERRNO_ADDRNOTAVAIL
 #define EAFNOSUPPORT __WASI_ERRNO_AFNOSUPPORT
 #define EAGAIN __WASI_ERRNO_AGAIN
+#define EAI_ADDRFAMILY -9
+#define EAI_AGAIN -3
+#define EAI_ALLDONE -103
+#define EAI_BADFLAGS -1
+#define EAI_CANCELED -101
+#define EAI_FAIL -4
+#define EAI_FAMILY -6
+#define EAI_IDN_ENCODE -105
+#define EAI_INPROGRESS -100
+#define EAI_INTR -104
+#define EAI_MEMORY -10
+#define EAI_NODATA -5
+#define EAI_NONAME -2
+#define EAI_NOTCANCELED -102
+#define EAI_OVERFLOW -12
+#define EAI_SERVICE -8
+#define EAI_SOCKTYPE -7
+#define EAI_SYSTEM -11
 #define EALREADY __WASI_ERRNO_ALREADY
 #define EBADF __WASI_ERRNO_BADF
 #define EBADID 5
@@ -335,6 +361,71 @@
 #define FIFOTYPE '6'
 #define FILENAME_MAX 4096
 #define FILESIZEBITS 64
+#define FILESYSTEM_ADVICE_DONT_NEED 4
+#define FILESYSTEM_ADVICE_NORMAL 0
+#define FILESYSTEM_ADVICE_NO_REUSE 5
+#define FILESYSTEM_ADVICE_RANDOM 2
+#define FILESYSTEM_ADVICE_SEQUENTIAL 1
+#define FILESYSTEM_ADVICE_WILL_NEED 3
+#define FILESYSTEM_DESCRIPTOR_FLAGS_DATA_INTEGRITY_SYNC (1 << 3)
+#define FILESYSTEM_DESCRIPTOR_FLAGS_FILE_INTEGRITY_SYNC (1 << 2)
+#define FILESYSTEM_DESCRIPTOR_FLAGS_MUTATE_DIRECTORY (1 << 5)
+#define FILESYSTEM_DESCRIPTOR_FLAGS_READ (1 << 0)
+#define FILESYSTEM_DESCRIPTOR_FLAGS_REQUESTED_WRITE_SYNC (1 << 4)
+#define FILESYSTEM_DESCRIPTOR_FLAGS_WRITE (1 << 1)
+#define FILESYSTEM_DESCRIPTOR_TYPE_BLOCK_DEVICE 1
+#define FILESYSTEM_DESCRIPTOR_TYPE_CHARACTER_DEVICE 2
+#define FILESYSTEM_DESCRIPTOR_TYPE_DIRECTORY 3
+#define FILESYSTEM_DESCRIPTOR_TYPE_FIFO 4
+#define FILESYSTEM_DESCRIPTOR_TYPE_REGULAR_FILE 6
+#define FILESYSTEM_DESCRIPTOR_TYPE_SOCKET 7
+#define FILESYSTEM_DESCRIPTOR_TYPE_SYMBOLIC_LINK 5
+#define FILESYSTEM_DESCRIPTOR_TYPE_UNKNOWN 0
+#define FILESYSTEM_ERROR_CODE_ACCESS 0
+#define FILESYSTEM_ERROR_CODE_ALREADY 2
+#define FILESYSTEM_ERROR_CODE_BAD_DESCRIPTOR 3
+#define FILESYSTEM_ERROR_CODE_BUSY 4
+#define FILESYSTEM_ERROR_CODE_CROSS_DEVICE 36
+#define FILESYSTEM_ERROR_CODE_DEADLOCK 5
+#define FILESYSTEM_ERROR_CODE_EXIST 7
+#define FILESYSTEM_ERROR_CODE_FILE_TOO_LARGE 8
+#define FILESYSTEM_ERROR_CODE_ILLEGAL_BYTE_SEQUENCE 9
+#define FILESYSTEM_ERROR_CODE_INSUFFICIENT_MEMORY 22
+#define FILESYSTEM_ERROR_CODE_INSUFFICIENT_SPACE 23
+#define FILESYSTEM_ERROR_CODE_INTERRUPTED 11
+#define FILESYSTEM_ERROR_CODE_INVALID 12
+#define FILESYSTEM_ERROR_CODE_INVALID_SEEK 34
+#define FILESYSTEM_ERROR_CODE_IN_PROGRESS 10
+#define FILESYSTEM_ERROR_CODE_IO 13
+#define FILESYSTEM_ERROR_CODE_IS_DIRECTORY 14
+#define FILESYSTEM_ERROR_CODE_LOOP 15
+#define FILESYSTEM_ERROR_CODE_MESSAGE_SIZE 17
+#define FILESYSTEM_ERROR_CODE_NAME_TOO_LONG 18
+#define FILESYSTEM_ERROR_CODE_NOT_DIRECTORY 24
+#define FILESYSTEM_ERROR_CODE_NOT_EMPTY 25
+#define FILESYSTEM_ERROR_CODE_NOT_PERMITTED 31
+#define FILESYSTEM_ERROR_CODE_NOT_RECOVERABLE 26
+#define FILESYSTEM_ERROR_CODE_NO_DEVICE 19
+#define FILESYSTEM_ERROR_CODE_NO_ENTRY 20
+#define FILESYSTEM_ERROR_CODE_NO_LOCK 21
+#define FILESYSTEM_ERROR_CODE_NO_SUCH_DEVICE 29
+#define FILESYSTEM_ERROR_CODE_NO_TTY 28
+#define FILESYSTEM_ERROR_CODE_OVERFLOW 30
+#define FILESYSTEM_ERROR_CODE_PIPE 32
+#define FILESYSTEM_ERROR_CODE_QUOTA 6
+#define FILESYSTEM_ERROR_CODE_READ_ONLY 33
+#define FILESYSTEM_ERROR_CODE_TEXT_FILE_BUSY 35
+#define FILESYSTEM_ERROR_CODE_TOO_MANY_LINKS 16
+#define FILESYSTEM_ERROR_CODE_UNSUPPORTED 27
+#define FILESYSTEM_ERROR_CODE_WOULD_BLOCK 1
+#define FILESYSTEM_NEW_TIMESTAMP_NOW 1
+#define FILESYSTEM_NEW_TIMESTAMP_NO_CHANGE 0
+#define FILESYSTEM_NEW_TIMESTAMP_TIMESTAMP 2
+#define FILESYSTEM_OPEN_FLAGS_CREATE (1 << 0)
+#define FILESYSTEM_OPEN_FLAGS_DIRECTORY (1 << 1)
+#define FILESYSTEM_OPEN_FLAGS_EXCLUSIVE (1 << 2)
+#define FILESYSTEM_OPEN_FLAGS_TRUNCATE (1 << 3)
+#define FILESYSTEM_PATH_FLAGS_SYMLINK_FOLLOW (1 << 0)
 #define FIONBIO 2
 #define FIONREAD 1
 #define FLOATBITS (sizeof(float) * 8)
@@ -423,6 +514,7 @@
 #define HIBITL MINLONG
 #define HIBITS MINSHORT
 #define HOST_NAME_MAX 255
+#define HOST_NOT_FOUND 1
 #define HUGE 3.40282346638528859812e+38F
 #define HUGE_VAL ((double)INFINITY)
 #define HUGE_VALF INFINITY
@@ -1096,10 +1188,12 @@
 #define MOREDATA 2
 #define MSG_ANY 0x02
 #define MSG_BAND 0x04
+#define MSG_DONTWAIT 0x0040
 #define MSG_HIPRI 0x01
-#define MSG_PEEK __WASI_RIFLAGS_RECV_PEEK
-#define MSG_TRUNC __WASI_RIFLAGS_RECV_DATA_TRUNCATED
-#define MSG_WAITALL __WASI_RIFLAGS_RECV_WAITALL
+#define MSG_NOSIGNAL 0x4000
+#define MSG_PEEK 0x0002
+#define MSG_TRUNC 0x0020
+#define MSG_WAITALL 0x0100
 #define MUXID_ALL (-1)
 #define M_1_PI 0.31830988618379067154
 #define M_2_PI 0.63661977236758134308
@@ -1119,7 +1213,6 @@
 #define NAN (0.0f/0.0f)
 #define NBBY 8
 #define NCARGS 131072
-#define NDEBUG 1
 #define ND_NA_FLAG_OVERRIDE 0x00000020
 #define ND_NA_FLAG_ROUTER 0x00000080
 #define ND_NA_FLAG_SOLICITED 0x00000040
@@ -1141,10 +1234,45 @@
 #define ND_REDIRECT 137
 #define ND_ROUTER_ADVERT 134
 #define ND_ROUTER_SOLICIT 133
+#define NETWORK_ERROR_CODE_ACCESS_DENIED 1
+#define NETWORK_ERROR_CODE_ADDRESS_IN_USE 12
+#define NETWORK_ERROR_CODE_ADDRESS_NOT_BINDABLE 11
+#define NETWORK_ERROR_CODE_CONCURRENCY_CONFLICT 6
+#define NETWORK_ERROR_CODE_CONNECTION_ABORTED 16
+#define NETWORK_ERROR_CODE_CONNECTION_REFUSED 14
+#define NETWORK_ERROR_CODE_CONNECTION_RESET 15
+#define NETWORK_ERROR_CODE_DATAGRAM_TOO_LARGE 17
+#define NETWORK_ERROR_CODE_INVALID_ARGUMENT 3
+#define NETWORK_ERROR_CODE_INVALID_STATE 9
+#define NETWORK_ERROR_CODE_NAME_UNRESOLVABLE 18
+#define NETWORK_ERROR_CODE_NEW_SOCKET_LIMIT 10
+#define NETWORK_ERROR_CODE_NOT_IN_PROGRESS 7
+#define NETWORK_ERROR_CODE_NOT_SUPPORTED 2
+#define NETWORK_ERROR_CODE_OUT_OF_MEMORY 4
+#define NETWORK_ERROR_CODE_PERMANENT_RESOLVER_FAILURE 20
+#define NETWORK_ERROR_CODE_REMOTE_UNREACHABLE 13
+#define NETWORK_ERROR_CODE_TEMPORARY_RESOLVER_FAILURE 19
+#define NETWORK_ERROR_CODE_TIMEOUT 5
+#define NETWORK_ERROR_CODE_UNKNOWN 0
+#define NETWORK_ERROR_CODE_WOULD_BLOCK 8
+#define NETWORK_IP_ADDRESS_FAMILY_IPV4 0
+#define NETWORK_IP_ADDRESS_FAMILY_IPV6 1
+#define NETWORK_IP_ADDRESS_IPV4 0
+#define NETWORK_IP_ADDRESS_IPV6 1
+#define NETWORK_IP_SOCKET_ADDRESS_IPV4 0
+#define NETWORK_IP_SOCKET_ADDRESS_IPV6 1
 #define NEW_ENV_VALUE 1
 #define NEW_ENV_VAR 0
 #define NGROUPS 32
 #define NGROUPS_MAX 32
+#define NI_DGRAM 0x10
+#define NI_MAXHOST 255
+#define NI_MAXSERV 32
+#define NI_NAMEREQD 0x08
+#define NI_NOFQDN 0x04
+#define NI_NUMERICHOST 0x01
+#define NI_NUMERICSCOPE 0x100
+#define NI_NUMERICSERV 0x02
 #define NL_ARGMAX 9
 #define NL_CAT_LOCALE 1
 #define NL_LANGMAX 32
@@ -1163,6 +1291,9 @@
 #define NOTAUTH ns_r_notauth
 #define NOTIMP ns_r_notimpl
 #define NOTZONE ns_r_notzone
+#define NO_ADDRESS NO_DATA
+#define NO_DATA 4
+#define NO_RECOVERY 3
 #define NR_ICMP_TYPES 18
 #define NR_ICMP_UNREACH 15
 #define NSLC 18
@@ -1316,6 +1447,9 @@
 #define PAGE_SIZE PAGESIZE
 #define PATH_MAX 4096
 #define PDP_ENDIAN __PDP_ENDIAN
+#define PF_INET 1
+#define PF_INET6 2
+#define PF_UNSPEC 0
 #define PM_STR 0x20027
 #define POLLERR 0x1000
 #define POLLHUP 0x2000
@@ -1416,38 +1550,6 @@
 #define PRIxLEAST8 __UINT_LEAST8_FMTx__
 #define PRIxMAX __UINTMAX_FMTx__
 #define PRIxPTR __UINTPTR_FMTx__
-#define PTHREAD_BARRIER_SERIAL_THREAD (-1)
-#define PTHREAD_CANCELED ((void *)-1)
-#define PTHREAD_CANCEL_ASYNCHRONOUS 1
-#define PTHREAD_CANCEL_DEFERRED 0
-#define PTHREAD_CANCEL_DISABLE 1
-#define PTHREAD_CANCEL_ENABLE 0
-#define PTHREAD_CANCEL_MASKED 2
-#define PTHREAD_COND_INITIALIZER {{{0}}}
-#define PTHREAD_CREATE_DETACHED 1
-#define PTHREAD_CREATE_JOINABLE 0
-#define PTHREAD_DESTRUCTOR_ITERATIONS 4
-#define PTHREAD_EXPLICIT_SCHED 1
-#define PTHREAD_INHERIT_SCHED 0
-#define PTHREAD_KEYS_MAX 128
-#define PTHREAD_MUTEX_DEFAULT 0
-#define PTHREAD_MUTEX_ERRORCHECK 2
-#define PTHREAD_MUTEX_INITIALIZER {{{0}}}
-#define PTHREAD_MUTEX_NORMAL 0
-#define PTHREAD_MUTEX_RECURSIVE 1
-#define PTHREAD_MUTEX_ROBUST 1
-#define PTHREAD_MUTEX_STALLED 0
-#define PTHREAD_NULL ((pthread_t)0)
-#define PTHREAD_ONCE_INIT 0
-#define PTHREAD_PRIO_INHERIT 1
-#define PTHREAD_PRIO_NONE 0
-#define PTHREAD_PRIO_PROTECT 2
-#define PTHREAD_PROCESS_PRIVATE 0
-#define PTHREAD_PROCESS_SHARED 1
-#define PTHREAD_RWLOCK_INITIALIZER {{{0}}}
-#define PTHREAD_SCOPE_PROCESS 1
-#define PTHREAD_SCOPE_SYSTEM 0
-#define PTHREAD_STACK_MIN 2048
 #define PTRBITS (sizeof(char *) * 8)
 #define PTRDIFF_MAX INT32_MAX
 #define PTRDIFF_MIN INT32_MIN
@@ -1497,6 +1599,14 @@
 #define RRFIXEDSZ NS_RRFIXEDSZ
 #define RRQ 01
 #define RS_HIPRI 0x01
+#define RTLD_DEFAULT ((void *)0)
+#define RTLD_GLOBAL 256
+#define RTLD_LAZY 1
+#define RTLD_LOCAL 8
+#define RTLD_NEXT ((void *)-1)
+#define RTLD_NODELETE 4096
+#define RTLD_NOLOAD 4
+#define RTLD_NOW 2
 #define RUSAGE_CHILDREN 2
 #define RUSAGE_SELF 1
 #define R_OK (4)
@@ -1580,8 +1690,6 @@
 #define SEEK_SET __WASI_WHENCE_SET
 #define SEGSIZE 512
 #define SEM_FAILED ((sem_t *)0)
-#define SEM_NSEMS_MAX 256
-#define SEM_VALUE_MAX 0x7fffffff
 #define SERVFAIL ns_r_servfail
 #define SHORTBITS (sizeof(short) * 8)
 #define SHRT_MAX 0x7fff
@@ -1632,9 +1740,22 @@
 #define SOCK_DGRAM __WASI_FILETYPE_SOCKET_DGRAM
 #define SOCK_NONBLOCK (0x00004000)
 #define SOCK_STREAM __WASI_FILETYPE_SOCKET_STREAM
+#define SOL_IP 0
+#define SOL_IPV6 41
 #define SOL_SOCKET 0x7fffffff
 #define SOL_TCP 6
 #define SOL_UDP 17
+#define SOMAXCONN 128
+#define SO_ACCEPTCONN 30
+#define SO_DOMAIN 39
+#define SO_ERROR 4
+#define SO_KEEPALIVE 9
+#define SO_PROTOCOL 38
+#define SO_RCVBUF 8
+#define SO_RCVTIMEO 66
+#define SO_REUSEADDR 2
+#define SO_SNDBUF 7
+#define SO_SNDTIMEO 67
 #define SO_TYPE 3
 #define SSIZE_MAX LONG_MAX
 #define STATUS ns_o_status
@@ -1658,9 +1779,23 @@
 #define STDERR_FILENO 2
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
+#define STREAMS_STREAM_ERROR_CLOSED 1
+#define STREAMS_STREAM_ERROR_LAST_OPERATION_FAILED 0
 #define STRU_F 1
 #define STRU_P 3
 #define STRU_R 2
+#define ST_APPEND 256
+#define ST_IMMUTABLE 512
+#define ST_MANDLOCK 64
+#define ST_NOATIME 1024
+#define ST_NODEV 4
+#define ST_NODIRATIME 2048
+#define ST_NOEXEC 8
+#define ST_NOSUID 2
+#define ST_RDONLY 1
+#define ST_RELATIME 4096
+#define ST_SYNCHRONOUS 16
+#define ST_WRITE 128
 #define SUN_LEN(s) (2+strlen((s)->sun_path))
 #define SUSP 237
 #define SYMLOOP_MAX 40
@@ -1675,7 +1810,7 @@
 #define S_IFBLK (0x6000)
 #define S_IFCHR (0x2000)
 #define S_IFDIR (0x4000)
-#define S_IFIFO (0xc000)
+#define S_IFIFO (0x1000)
 #define S_IFLNK (0xa000)
 #define S_IFMT (S_IFBLK | S_IFCHR | S_IFDIR | S_IFIFO | S_IFLNK | S_IFREG | S_IFSOCK)
 #define S_IFREG (0x8000)
@@ -1778,6 +1913,9 @@
 #define TCP_REPAIR_WINDOW 29
 #define TCP_SAVED_SYN 28
 #define TCP_SAVE_SYN 27
+#define TCP_SHUTDOWN_TYPE_BOTH 2
+#define TCP_SHUTDOWN_TYPE_RECEIVE 0
+#define TCP_SHUTDOWN_TYPE_SEND 1
 #define TCP_SYNCNT 7
 #define TCP_SYN_RECV 3
 #define TCP_SYN_SENT 2
@@ -1867,6 +2005,7 @@
 #define TOREAD 00004
 #define TOWRITE 00002
 #define TRANSIENT 4
+#define TRY_AGAIN 2
 #define TSGID 02000
 #define TSS_DTOR_ITERATIONS 4
 #define TSUID 04000
@@ -2042,6 +2181,7 @@
 #define _Complex_I (0.0f+1.0fi)
 #define _DIRENT_H 
 #define _DIRENT_HAVE_D_TYPE 
+#define _DLFCN_H 
 #define _ENDIAN_H 
 #define _ERRNO_H 
 #define _ERR_H 
@@ -2071,6 +2211,7 @@
 #define _MATH_H 
 #define _MONETARY_H 
 #define _MQUEUE_H 
+#define _NETDB_H 
 #define _NETINET_ICMP6_H 
 #define _NETINET_IGMP_H 
 #define _NETINET_IN_H 
@@ -2157,7 +2298,6 @@
 #define _POSIX_STREAM_MAX 8
 #define _POSIX_SYMLINK_MAX 255
 #define _POSIX_SYMLOOP_MAX 8
-#define _POSIX_THREADS _POSIX_VERSION
 #define _POSIX_THREAD_ATTR_STACKADDR _POSIX_VERSION
 #define _POSIX_THREAD_ATTR_STACKSIZE _POSIX_VERSION
 #define _POSIX_THREAD_CPUTIME _POSIX_VERSION
@@ -2180,9 +2320,7 @@
 #define _POSIX_V7_ILP32_OFFBIG (1)
 #define _POSIX_VDISABLE 0
 #define _POSIX_VERSION 200809L
-#define _PTHREAD_H 
 #define _PTRDIFF_T 
-#define _REENTRANT 1
 #define _REGEX_H 
 #define _SCHED_H 
 #define _SC_2_CHAR_TERM 95
@@ -2349,6 +2487,7 @@
 #define _SYS_REG_H 
 #define _SYS_SELECT_H 
 #define _SYS_SOCKET_H 
+#define _SYS_STATVFS_H 
 #define _SYS_STAT_H 
 #define _SYS_SYSCALL_H 
 #define _SYS_SYSINFO_H 
@@ -2389,6 +2528,7 @@
 #define __BIGGEST_ALIGNMENT__ 16
 #define __BIG_ENDIAN 4321
 #define __BIND 19950621
+#define __BINDINGS_WASIP2_H 
 #define __BYTE_ORDER __BYTE_ORDER__
 #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
 #define __CHAR16_TYPE__ unsigned short
@@ -2685,7 +2825,6 @@
 #define __OPENCL_MEMORY_SCOPE_SUB_GROUP 4
 #define __OPENCL_MEMORY_SCOPE_WORK_GROUP 1
 #define __OPENCL_MEMORY_SCOPE_WORK_ITEM 0
-#define __OPTIMIZE__ 1
 #define __ORDER_BIG_ENDIAN__ 4321
 #define __ORDER_LITTLE_ENDIAN__ 1234
 #define __ORDER_PDP_ENDIAN__ 3412
@@ -3025,7 +3164,7 @@
 #define __tg_real_remquo(x,y,z) (__RETCAST_2(x, y)( __FLT(x) && __FLT(y) ? remquof(x, y, z) : __LDBL((x)+(y)) ? remquol(x, y, z) : remquo(x, y, z) ))
 #define __tm_gmtoff tm_gmtoff
 #define __tm_zone tm_zone
-#define __va_copy(d,s) __builtin_va_copy(d,s)
+#define __va_copy(d,s) __builtin_va_copy(d, s)
 #define __wasi__ 1
 #define __wasi_api_h 
 #define __wasi_libc_environ_h 
@@ -3094,12 +3233,11 @@
 #define __wasilibc___typedef_suseconds_t_h 
 #define __wasilibc___typedef_time_t_h 
 #define __wasilibc___typedef_uid_t_h 
+#define __wasilibc_use_wasip2 1
 #define __wasm 1
 #define __wasm32 1
 #define __wasm32__ 1
 #define __wasm__ 1
-#define __wasm_atomics__ 1
-#define __wasm_bulk_memory__ 1
 #define _tolower(a) ((a)|0x20)
 #define _toupper(a) ((a)&0x5f)
 #define acos(x) __tg_real_complex(acos, (x))
@@ -3112,7 +3250,6 @@
 #define and_eq &=
 #define asin(x) __tg_real_complex(asin, (x))
 #define asinh(x) __tg_real_complex(asinh, (x))
-#define assert(x) (void)0
 #define atan(x) __tg_real_complex(atan, (x))
 #define atan2(x,y) __tg_real_2(atan2, (x), (y))
 #define atanh(x) __tg_real_complex(atanh, (x))
@@ -3176,12 +3313,15 @@
 #define fsfilcnt64_t fsfilcnt_t
 #define fstat64 fstat
 #define fstatat64 fstatat
+#define fstatvfs64 fstatvfs
 #define ftello64 ftello
 #define ftruncate64 ftruncate
 #define getdents64 getdents
 #define glob64 glob
 #define glob64_t glob_t
 #define globfree64 globfree
+#define h_addr h_addr_list[0]
+#define h_errno h_errno
 #define howmany(n,d) (((n)+((d)-1))/(d))
 #define htobe16(x) __bswap16(x)
 #define htobe32(x) __bswap32(x)
@@ -3333,9 +3473,6 @@
 #define powerof2(n) !(((n)-1) & (n))
 #define pread64 pread
 #define preadv64 preadv
-#define pthread_cleanup_pop(r) _pthread_cleanup_pop(&__cb, (r)); } while(0)
-#define pthread_cleanup_push(f,x) do { struct __ptcb __cb; _pthread_cleanup_push(&__cb, f, x);
-#define pthread_equal(x,y) ((x)==(y))
 #define pwrite64 pwrite
 #define pwritev64 pwritev
 #define readdir64 readdir
@@ -3362,6 +3499,7 @@
 #define st_mtime st_mtim.tv_sec
 #define stat64 stat
 #define static_assert _Static_assert
+#define statvfs64 statvfs
 #define stderr (stderr)
 #define stdin (stdin)
 #define stdout (stdout)
