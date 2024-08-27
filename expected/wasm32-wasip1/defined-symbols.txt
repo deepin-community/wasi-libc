@@ -329,9 +329,11 @@ __wasilibc_nocwd_scandirat
 __wasilibc_nocwd_symlinkat
 __wasilibc_nocwd_utimensat
 __wasilibc_open_nomode
+__wasilibc_populate_preopens
 __wasilibc_register_preopened_fd
 __wasilibc_rename_newat
 __wasilibc_rename_oldat
+__wasilibc_reset_preopens
 __wasilibc_rmdirat
 __wasilibc_stat
 __wasilibc_tell
@@ -446,6 +448,7 @@ cexp
 cexpf
 cexpl
 chdir
+chmod
 cimag
 cimagf
 cimagl
@@ -542,6 +545,8 @@ fabs
 fabsf
 fabsl
 faccessat
+fchmod
+fchmodat
 fclose
 fcntl
 fcvt
@@ -636,6 +641,7 @@ fsetpos
 fsetpos64
 fstat
 fstatat
+fstatvfs
 fsync
 ftell
 ftello
@@ -936,6 +942,7 @@ readlinkat
 readv
 realloc
 reallocarray
+realpath
 recv
 regcomp
 regerror
@@ -1011,6 +1018,7 @@ srand48
 srandom
 sscanf
 stat
+statvfs
 stderr
 stdin
 stdout
