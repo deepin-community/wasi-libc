@@ -13,6 +13,7 @@
 #endif
 
 #include <stdalign.h>
+#include <assert.h>
 
 static void dummy_0()
 {
@@ -59,6 +60,17 @@ void __tl_sync(pthread_t td)
 	__wait(&__thread_list_lock, &tl_lock_waiters, val, 0);
 	if (tl_lock_waiters) __wake(&__thread_list_lock, 1, 0);
 }
+
+#ifndef __wasilibc_unmodified_upstream
+static void *map_base_deferred_free;
+
+static void process_map_base_deferred_free()
+{
+	/* called with __tl_lock held */
+	free(map_base_deferred_free);
+	map_base_deferred_free = NULL;
+}
+#endif
 
 #ifdef __wasilibc_unmodified_upstream
 _Noreturn void __pthread_exit(void *result)
@@ -164,14 +176,6 @@ static void __pthread_exit(void *result)
 	self->prev->next = self->next;
 	self->prev = self->next = self;
 
-#ifndef __wasilibc_unmodified_upstream
-	/* On Linux, the thread is created with CLONE_CHILD_CLEARTID,
-	 * and this lock will unlock by kernel when this thread terminates.
-	 * So we should unlock it here in WebAssembly.
-	 * See also set_tid_address(2) */
-	__tl_unlock();
-#endif
-
 #ifdef __wasilibc_unmodified_upstream
 	if (state==DT_DETACHED && self->map_base) {
 		/* Detached threads must block even implementation-internal
@@ -190,10 +194,17 @@ static void __pthread_exit(void *result)
 	}
 #else
 	if (state==DT_DETACHED && self->map_base) {
-		// __syscall(SYS_exit) would unlock the thread, list
-		// do it manually here
-		__tl_unlock();
-		free(self->map_base);
+		/* As we use malloc/free which is considerably more complex
+		 * than mmap/munmap to call and can even require a valid
+		 * thread context, it's difficult to implement __unmapself.
+		 *
+		 * Here we take an alternative approach which simply defers
+		 * the deallocation. An obvious downside of this approach is
+		 * that it keeps the stack longer. (possibly forever.)
+		 * To avoid wasting too much memory, we only defer a single
+		 * item at most. */
+		process_map_base_deferred_free();
+		map_base_deferred_free = self->map_base;
 		// Can't use `exit()` here, because it is too high level
 		return;
 	}
@@ -212,10 +223,15 @@ static void __pthread_exit(void *result)
 #ifdef __wasilibc_unmodified_upstream
 	for (;;) __syscall(SYS_exit, 0);
 #else
-	// __syscall(SYS_exit) would unlock the thread, list
-	// do it manually here
-	__tl_unlock();
 	// Can't use `exit()` here, because it is too high level
+
+	/* On Linux, the thread is created with CLONE_CHILD_CLEARTID,
+	 * and the lock (__thread_list_lock) will be unlocked by kernel when
+	 * this thread terminates.
+	 * See also set_tid_address(2)
+	 *
+	 * In WebAssembly, we leave it to wasi_thread_start instead.
+	 */
 #endif
 }
 
@@ -430,10 +446,21 @@ int __pthread_create(pthread_t *restrict res, const pthread_attr_t *restrict att
 			if (map == MAP_FAILED) goto fail;
 		}
 #else
+		/* Process the deferred free request if any before
+		 * allocationg a new one. Hopefully it enables a reuse of the memory.
+		 *
+		 * Note: We can't perform a simple "handoff" becasue allocation
+		 * sizes might be different. (eg. the stack size might differ) */
+		__tl_lock();
+		process_map_base_deferred_free();
+		__tl_unlock();
 		map = malloc(size);
 		if (!map) goto fail;
 #endif
 		tsd = map + size - __pthread_tsd_size;
+#ifndef __wasilibc_unmodified_upstream
+	        memset(tsd, 0, __pthread_tsd_size);
+#endif
 		if (!stack) {
 #ifdef __wasilibc_unmodified_upstream
 			stack = tsd - libc.tls_size;
@@ -535,13 +562,17 @@ int __pthread_create(pthread_t *restrict res, const pthread_attr_t *restrict att
 			__wait(&args->control, 0, 3, 0);
 	}
 #else
+#define WASI_THREADS_MAX_TID 0x1FFFFFFF
 	/* `wasi_thread_spawn` will either return a host-provided thread ID (TID)
-	 * (`>= 0`) or an error code (`< 0`). As in the unmodified version, all
-	 * spawn failures translate to EAGAIN; unlike the modified version, there is
-	 * no need to "start up" the child thread--the host does this. If the spawn
-	 * did succeed, then we store the TID atomically, since this parent thread
-	 * is racing with the child thread to set this field; this way, whichever
-	 * thread reaches this point first can continue without waiting. */
+	 * (`<1, 0x1FFFFFFF>`) or an error code (`< 0`). Please note that `0` is
+	 * reserved for compatibility reasons and must not be returned by the runtime.
+	 * As in the unmodified version, all spawn failures translate to EAGAIN;
+	 * unlike the modified version, there is no need to "start up" the child
+	 * thread--the host does this. If the spawn did succeed, then we store the
+	 * TID atomically, since this parent thread is racing with the child thread
+	 * to set this field; this way, whichever thread reaches this point first
+	 * can continue without waiting. */
+	assert(ret != 0 && ret <= WASI_THREADS_MAX_TID);
 	if (ret < 0) {
 		ret = -EAGAIN;
 	} else {
