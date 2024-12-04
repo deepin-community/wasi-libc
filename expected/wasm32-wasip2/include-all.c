@@ -60,6 +60,7 @@
 #include <__typedef_suseconds_t.h>
 #include <__typedef_time_t.h>
 #include <__typedef_uid_t.h>
+#include <__wasi_snapshot.h>
 #include <alloca.h>
 #include <ar.h>
 #include <arpa/ftp.h>
@@ -75,6 +76,7 @@
 #include <crypt.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <dlfcn.h>
 #include <endian.h>
 #include <err.h>
 #include <errno.h>
@@ -100,6 +102,7 @@
 #include <memory.h>
 #include <monetary.h>
 #include <mqueue.h>
+#include <netdb.h>
 #include <netinet/icmp6.h>
 #include <netinet/igmp.h>
 #include <netinet/in.h>
@@ -141,6 +144,7 @@
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <sys/stropts.h>
 #include <sys/syscall.h>
 #include <sys/sysinfo.h>
@@ -167,5 +171,6 @@
 #include <wasi/libc-find-relpath.h>
 #include <wasi/libc-nocwd.h>
 #include <wasi/libc.h>
+#include <wasi/wasip2.h>
 #include <wchar.h>
 #include <wctype.h>
