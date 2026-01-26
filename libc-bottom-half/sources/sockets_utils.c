@@ -1,9 +1,33 @@
 #include <errno.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 
 #include <wasi/sockets_utils.h>
 
 static network_own_network_t global_network;
 static bool global_network_initialized = false;
+static const service_entry_t global_services[] = {
+    { "domain",      53,  SERVICE_PROTOCOL_TCP | SERVICE_PROTOCOL_UDP },
+    { "ftp",         21,  SERVICE_PROTOCOL_TCP },
+    { "ftp-data",    20,  SERVICE_PROTOCOL_TCP },
+    { "ftps",        990, SERVICE_PROTOCOL_TCP },
+    { "ftps-data",   989, SERVICE_PROTOCOL_TCP },
+    { "http",        80,  SERVICE_PROTOCOL_TCP | SERVICE_PROTOCOL_UDP },
+    { "https",       443, SERVICE_PROTOCOL_TCP | SERVICE_PROTOCOL_UDP },
+    { "imap",        143, SERVICE_PROTOCOL_TCP },
+    { "imaps",       993, SERVICE_PROTOCOL_TCP },
+    { "ntp",         123, SERVICE_PROTOCOL_TCP },
+    { "pop3",        110, SERVICE_PROTOCOL_TCP },
+    { "pop3s",       995, SERVICE_PROTOCOL_TCP },
+    { "smtp",        25,  SERVICE_PROTOCOL_TCP },
+    { "ssh",         22,  SERVICE_PROTOCOL_TCP },
+    { "submission",  587, SERVICE_PROTOCOL_TCP },
+    { "submissions", 465, SERVICE_PROTOCOL_TCP },
+    { "telnet",      23,  SERVICE_PROTOCOL_TCP },
+    { 0 },
+};
+weak_alias(global_services, __wasi_sockets_services_db);
 
 network_borrow_network_t __wasi_sockets_utils__borrow_network()
 {
@@ -459,4 +483,54 @@ bool __wasi_sockets_utils__stream(
 	}
 
 	return true;
+}
+
+int __wasi_sockets_utils__parse_port(const char *restrict port_str)
+{
+    char *end = NULL;
+    errno = 0;
+    long port = strtol(port_str, &end, 10);
+
+    // Check for various possible errors:
+    //   - the input is not a valid number
+    //   - the entire input string is not consumed
+    //   - the number is not within the valid port range
+    //   - the input does not start with a digit (strtol allows leading
+    //     whitespace and optional sign)
+    if (errno != 0 || end == NULL || *end != '\0' || port < 0
+            || port > 65535 || !isdigit(*port_str)) {
+        return -1;
+    }
+
+    return (int)port;
+}
+
+const service_entry_t *__wasi_sockets_utils__get_service_entry_by_name(const char *name)
+{
+    if (!name) {
+        return NULL;
+    }
+
+    const service_entry_t *entry = __wasi_sockets_services_db;
+    while(entry->s_name) {
+        if (strcmp(name, entry->s_name) == 0) {
+            return entry;
+        }
+        ++entry;
+    }
+
+    return NULL;
+}
+
+const service_entry_t *__wasi_sockets_utils__get_service_entry_by_port(const uint16_t port)
+{
+    const service_entry_t *entry = __wasi_sockets_services_db;
+    while(entry->s_name) {
+        if (entry->port == port) {
+            return entry;
+        }
+        ++entry;
+    }
+
+    return NULL;
 }

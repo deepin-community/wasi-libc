@@ -1,3 +1,48 @@
+wasi-libc (0.0~git20250726.3f7eb4c-4deepin1) unstable; urgency=medium
+
+  * add mbranch-protection=none to fix on arm64
+
+ -- Chang Yang <yangchang@deepin.org>  Mon, 26 Jan 2026 14:06:08 +0800
+
+wasi-libc (0.0~git20250726.3f7eb4c-4) unstable; urgency=medium
+
+  * upload to unstable
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Fri, 26 Dec 2025 20:55:54 +0100
+
+wasi-libc (0.0~git20250726.3f7eb4c-3) experimental; urgency=medium
+
+  * upgrade to LLVM 21
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Fri, 28 Nov 2025 17:34:13 +0100
+
+wasi-libc (0.0~git20250726.3f7eb4c-2) unstable; urgency=medium
+
+  * update d/copyright
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Sat, 25 Oct 2025 15:47:20 +0200
+
+wasi-libc (0.0~git20250726.3f7eb4c-1) experimental; urgency=medium
+
+  * new upstream release for rustc 1.90.0
+  * cherry-pick wasi-p2 build fix from upstream
+  * build: fix compiler-rt linkage
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Wed, 15 Oct 2025 13:44:31 +0200
+
+wasi-libc (0.0~git20241209.574b88d-2) unstable; urgency=medium
+
+  * upload to unstable
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Thu, 20 Feb 2025 19:25:44 +0100
+
+wasi-libc (0.0~git20241209.574b88d-1) experimental; urgency=medium
+
+  [ Fabian Grünbichler ]
+  * new upstream release for rustc 1.85.0
+
+ -- Fabian Grünbichler <debian@fabian.gruenbichler.email>  Mon, 17 Feb 2025 11:22:13 +0100
+
 wasi-libc (0.0~git20240708.3f43ea9-2) unstable; urgency=medium
 
   * upload to unstable

@@ -5,14 +5,17 @@
 
 include /usr/share/dpkg/buildflags.mk
 
-export NM = llvm-nm-19
-export AR = llvm-ar-19
-export CC = clang-19
+export NM = llvm-nm-21
+export AR = llvm-ar-21
+export CC = clang-21
+
+export BUILTINS_LIB = /usr/lib/llvm-21/lib/clang/21/lib/wasi/libclang_rt.builtins-wasm32.a
 
 # stack protector not yet supported, see
 # https://github.com/CraneStation/wasi-libc/issues/157
 # https://bugs.debian.org/1051815
-export EXTRA_CFLAGS = $(CFLAGS) $(LDFLAGS) -fno-stack-protector -fcf-protection=none
+CFLAGS_WASM = $(filter-out -mbranch-protection=% -fcf-protection=%, $(CFLAGS))
+export EXTRA_CFLAGS = $(CFLAGS_WASM) $(LDFLAGS) -fno-stack-protector
 
 %:
 	dh $@

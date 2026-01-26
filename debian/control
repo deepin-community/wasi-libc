@@ -5,7 +5,7 @@ Maintainer: Debian Rust Maintainers <pkg-rust-maintainers@alioth-lists.debian.ne
 Uploaders:
  Ximin Luo <infinity0@debian.org>,
  Fabian Grünbichler <debian@fabian.gruenbichler.email>
-Build-Depends: debhelper-compat (= 13), clang-19, llvm-19
+Build-Depends: debhelper-compat (= 13), clang-21, llvm-21, libclang-rt-21-dev-wasm32
 Standards-Version: 4.6.2
 Homepage: https://github.com/CraneStation/wasi-libc
 Vcs-Browser: https://salsa.debian.org/rust-team/wasi-libc

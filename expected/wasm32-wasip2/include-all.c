@@ -86,6 +86,7 @@
 #include <float.h>
 #include <fmtmsg.h>
 #include <fnmatch.h>
+#include <fts.h>
 #include <ftw.h>
 #include <getopt.h>
 #include <glob.h>
@@ -167,6 +168,7 @@
 #include <utime.h>
 #include <values.h>
 #include <wasi/api.h>
+#include <wasi/libc-busywait.h>
 #include <wasi/libc-environ.h>
 #include <wasi/libc-find-relpath.h>
 #include <wasi/libc-nocwd.h>

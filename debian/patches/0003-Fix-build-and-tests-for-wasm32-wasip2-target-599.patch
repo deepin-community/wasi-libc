@@ -1,0 +1,143 @@
+From: Tim Chevalier <tjc@igalia.com>
+Date: Tue, 29 Jul 2025 14:14:27 -0700
+Subject: Fix build and tests for wasm32-wasip2 target (#599)
+
+Trying to build wasi-libc for the `wasm32-wasip2` target and run the
+tests, I noticed a few issues:
+
+- `TARGET_TRIPLE` was being used before definition, in the definition of
+`OBJDIR`.
+- The ?= operator instead of = was being used to set `TARGET_TRIPLE` to
+`wasm32-wasip2`.
+This always left the target as `wasm32-wasi`, since it was defined to
+that in a previous line.
+- `builtins` wasn't being built by default, so building the tests would
+fail because it was unable to find `libclang_rt.builtins.a`.
+- `make test` didn't take the`WASI_SNAPSHOT` variable into
+consideration.
+- When building tests, `clang --target=wasm32-wasip2` was building a P2
+component,
+which caused the subsequent `wasm-tools component new` to fail because
+the input
+was already a component.
+
+This PR fixes these issues. Now I'm able to run the tests with
+`WASI_SNAPSHOT=p2`.
+
+(cherry picked from commit 93bd1f6048b163ca9b12336a4758a6f5c11c908c)
+---
+ Makefile      | 38 ++++++++++++++++++++++----------------
+ test/Makefile | 16 ++++++++++++++++
+ 2 files changed, 38 insertions(+), 16 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 8b90bbf..61b4046 100644
+--- a/Makefile
++++ b/Makefile
+@@ -23,6 +23,20 @@ MALLOC_IMPL ?= dlmalloc
+ BUILD_LIBC_TOP_HALF ?= yes
+ # yes or no
+ BUILD_LIBSETJMP ?= yes
++
++# Set the default WASI target triple.
++TARGET_TRIPLE ?= wasm32-wasi
++
++# Threaded version necessitates a different target, as objects from different
++# targets can't be mixed together while linking.
++ifeq ($(THREAD_MODEL), posix)
++TARGET_TRIPLE = wasm32-wasip1-threads
++endif
++
++ifeq ($(WASI_SNAPSHOT), p2)
++TARGET_TRIPLE = wasm32-wasip2
++endif
++
+ # The directory where we will store intermediate artifacts.
+ OBJDIR ?= build/$(TARGET_TRIPLE)
+ 
+@@ -46,19 +60,6 @@ BULK_MEMORY_THRESHOLD ?= 32
+ # Variables from this point on are not meant to be overridable via the
+ # make command-line.
+ 
+-# Set the default WASI target triple.
+-TARGET_TRIPLE ?= wasm32-wasi
+-
+-# Threaded version necessitates a different target, as objects from different
+-# targets can't be mixed together while linking.
+-ifeq ($(THREAD_MODEL), posix)
+-TARGET_TRIPLE ?= wasm32-wasi-threads
+-endif
+-
+-ifeq ($(WASI_SNAPSHOT), p2)
+-TARGET_TRIPLE ?= wasm32-wasip2
+-endif
+-
+ # These artifacts are "stamps" that we use to mark that some task (e.g., copying
+ # files) has been completed.
+ INCLUDE_DIRS := $(OBJDIR)/copy-include-headers.stamp
+@@ -597,7 +598,9 @@ PIC_OBJS = \
+ # exists that should be used instead.
+ SYSTEM_BUILTINS_LIB := $(shell ${CC} ${CFLAGS} --print-libgcc-file-name)
+ SYSTEM_RESOURCE_DIR := $(shell ${CC} ${CFLAGS} -print-resource-dir)
+-BUILTINS_LIB_REL := $(subst $(SYSTEM_RESOURCE_DIR),,$(SYSTEM_BUILTINS_LIB))
++BUILTINS_LIB_REL_1 := $(subst $(SYSTEM_RESOURCE_DIR),,$(SYSTEM_BUILTINS_LIB))
++# Substitute '/' for '\' so Windows paths work
++BUILTINS_LIB_REL := $(subst \,/,$(BUILTINS_LIB_REL_1))
+ TMP_RESOURCE_DIR := $(OBJDIR)/resource-dir
+ BUILTINS_LIB_PATH := $(TMP_RESOURCE_DIR)/$(BUILTINS_LIB_REL)
+ BUILTINS_LIB_DIR := $(dir $(BUILTINS_LIB_PATH))
+@@ -611,7 +614,10 @@ else
+ BUILTINS_URL := https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/libclang_rt.builtins-wasm32-wasi-25.0.tar.gz
+ 
+ $(BUILTINS_LIB_PATH):
+-	mkdir -p $(BUILTINS_LIB_DIR)
++# mkdir on Windows will error if the directory already exists
++ifeq ("$(wildcard $(BUILTINS_LIB_DIR))","")
++	mkdir -p "$(BUILTINS_LIB_DIR)"
++endif
+ 	curl -sSfL $(BUILTINS_URL) | \
+ 		tar xzf - -C $(BUILTINS_LIB_DIR) --strip-components 1
+ 	if [ ! -f $(BUILTINS_LIB_PATH) ]; then \
+@@ -853,7 +859,7 @@ STATIC_LIBS += \
+ 	$(SYSROOT_LIB)/libsetjmp.a
+ endif
+ 
+-libc: $(INCLUDE_DIRS) $(STATIC_LIBS)
++libc: $(INCLUDE_DIRS) $(STATIC_LIBS) builtins
+ 	touch $@
+ 
+ DUMMY := m rt pthread crypt util xnet resolv
+diff --git a/test/Makefile b/test/Makefile
+index 4aff0ab..b84ebf3 100644
+--- a/test/Makefile
++++ b/test/Makefile
+@@ -14,6 +14,15 @@ test: run
+ # Decide which target to build for and which libc to use.
+ TARGET_TRIPLE ?= wasm32-wasi
+ 
++# See comment in ../Makefile
++ifeq ($(THREAD_MODEL), posix)
++TARGET_TRIPLE = wasm32-wasip1-threads
++endif
++
++ifeq ($(WASI_SNAPSHOT), p2)
++TARGET_TRIPLE = wasm32-wasip2
++endif
++
+ # Setup various paths used by the tests.
+ OBJDIR ?= build/$(TARGET_TRIPLE)
+ DOWNDIR ?= build/download
+@@ -135,6 +144,13 @@ $(BUILTINS_STAMP):
+ 	make -C .. builtins
+ 	touch $@
+ 
++# For wasip2, we want clang to generate a core module rather than a component,
++# because `wasm-tools component new` is called subsequently and it expects
++# a core module.
++ifeq ($(TARGET_TRIPLE), wasm32-wasip2)
++LDFLAGS += -Wl,--skip-wit-component
++endif
++
+ # Build up all the `*.wasm.o` object files; these are the same regardless of
+ # whether we're building core modules or components.
+ $(WASM_OBJS): $(INFRA_HEADERS)
