@@ -14,7 +14,8 @@ export BUILTINS_LIB = /usr/lib/llvm-21/lib/clang/21/lib/wasi/libclang_rt.builtin
 # stack protector not yet supported, see
 # https://github.com/CraneStation/wasi-libc/issues/157
 # https://bugs.debian.org/1051815
-export EXTRA_CFLAGS = $(CFLAGS) $(LDFLAGS) -fno-stack-protector -fcf-protection=none
+CFLAGS_WASM = $(filter-out -mbranch-protection=% -fcf-protection=%, $(CFLAGS))
+export EXTRA_CFLAGS = $(CFLAGS_WASM) $(LDFLAGS) -fno-stack-protector
 
 %:
 	dh $@
